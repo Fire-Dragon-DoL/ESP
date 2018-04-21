@@ -7,6 +7,7 @@ CREATE DATABASE :"database_name";
 \ir 'schema/database.pgsql'
 
 \ir 'schema/functions/stream/category.pgsql'
+\ir 'schema/functions/stream/identifier.pgsql'
 \ir 'schema/functions/stream/version.pgsql'
 \ir 'schema/functions/stream/write_message.pgsql'
 
