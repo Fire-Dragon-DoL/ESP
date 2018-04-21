@@ -6,9 +6,9 @@ CREATE DATABASE :"database_name";
 \c :database_name
 \ir 'schema/database.pgsql'
 
-\ir 'schema/functions/category.pgsql'
-\ir 'schema/functions/stream_version.pgsql'
-\ir 'schema/functions/write_message.pgsql'
+\ir 'schema/functions/stream/category.pgsql'
+\ir 'schema/functions/stream/version.pgsql'
+\ir 'schema/functions/stream/write_message.pgsql'
 
 \ir 'schema/tables/messages.pgsql'
 

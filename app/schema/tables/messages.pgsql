@@ -12,4 +12,5 @@ CREATE TABLE "public"."messages" (
 )
 WITH (OIDS=FALSE);
 
-ALTER TABLE "public"."messages" ADD PRIMARY KEY ("global_position") NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE "public"."messages"
+  ADD PRIMARY KEY ("global_position") NOT DEFERRABLE INITIALLY IMMEDIATE;

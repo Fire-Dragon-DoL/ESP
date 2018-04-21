@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION write_message(
+CREATE OR REPLACE FUNCTION stream_write_message(
   _id varchar,
   _stream_name varchar,
   _type varchar,
@@ -24,7 +24,11 @@ BEGIN
 
   if _expected_version is not null then
     if _expected_version != stream_version then
-      raise exception 'Wrong expected version: % (Stream: %, Stream Version: %)', _expected_version, _stream_name, stream_version;
+      raise
+        exception 'Wrong expected version: % (Stream: %, Stream Version: %)',
+          _expected_version,
+          _stream_name,
+          stream_version;
     end if;
   end if;
 
