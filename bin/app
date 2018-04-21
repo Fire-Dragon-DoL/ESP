@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+executable="$0"
+project="${PROJECT_PATH:-$PWD}"
+
+default_database_name='eventstore'
+database="${DATABASE_NAME:-$default_database_name}"
+
+err_invalid_command=1
+
+perform() {
+  case "$1" in
+    setup)
+      set -e
+        PGOPTIONS='--client-min-messages=warning' \
+          psql \
+            -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
+            -d "$PGUSER" \
+            -f "$PWD/app/setup.sql"
+      set +e
+      ;;
+
+    shortlist)
+      echo 'setup'
+      ;;
+
+    *)
+      if [[ ! -z "${1// }" ]]; then
+        echo $"Invalid command: $1"
+      fi
+      local shortlist="$(perform shortlist)"
+      echo $"Usage: $executable ${shortlist// /|}"
+      exit $err_invalid_command
+      ;;
+
+  esac
+}
+
+pushd "$project" > /dev/null
+perform "$@"
+performed_result=$?
+popd > /dev/null
+
+exit $performed_result
