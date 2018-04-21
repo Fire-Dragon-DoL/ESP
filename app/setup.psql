@@ -1,0 +1,19 @@
+\set database_name `echo "$PGDATABASE"`
+
+DROP DATABASE IF EXISTS :"database_name";
+CREATE DATABASE :"database_name";
+
+\c :database_name
+\ir 'schema/database.pgsql'
+
+\ir 'schema/functions/category.pgsql'
+\ir 'schema/functions/stream_version.pgsql'
+\ir 'schema/functions/write_message.pgsql'
+
+\ir 'schema/tables/messages.pgsql'
+
+\ir 'schema/indexes/message_id.pgsql'
+\ir 'schema/indexes/messages_category_global_position.pgsql'
+\ir 'schema/indexes/messages_stream_name_position_uniq.pgsql'
+
+\d

@@ -16,7 +16,7 @@ perform() {
           psql \
             -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
             -d "$PGUSER" \
-            -f "$PWD/app/setup.sql"
+            -f "$PWD/app/setup.psql"
       set +e
       ;;
 
