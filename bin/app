@@ -16,12 +16,21 @@ perform() {
           psql \
             -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
             -d "$PGUSER" \
-            -f "$PWD/app/setup.psql"
+            -f "$project/app/setup.psql"
       set +e
       ;;
 
+    console)
+      psql
+      ;;
+
+    test)
+      pg_prove --recurse --trap --jobs 4 --shuffle --ext=pg --runtests \
+        "$project/tests/hello_world.pg"
+      ;;
+
     shortlist)
-      echo 'setup'
+      echo 'setup console test'
       ;;
 
     *)

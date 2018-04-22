@@ -2,6 +2,8 @@
 
 ## Setup
 
+- Make sure you only have one version of postgres installed (or ensure you
+  are using the right server)
 - `sudo apt-get install pgtap`
 - `bin/app setup`
 - Set `PGDATABASE` env variable to database you want to use

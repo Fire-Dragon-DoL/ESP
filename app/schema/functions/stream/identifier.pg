@@ -1,0 +1,23 @@
+CREATE OR REPLACE FUNCTION stream_identifier(
+  _stream_name varchar
+)
+RETURNS varchar
+AS $$
+DECLARE
+  category varchar;
+  identifier varchar;
+BEGIN
+  category = stream_category(_stream_name);
+  identifier = ltrim(_stream_name, category);
+  identifier = ltrim(identifier, '-');
+
+  if identifier = '' then
+    raise
+      exception 'Provided stream name has no identifier: %',
+        _stream_name;
+  end if;
+
+  return identifier;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

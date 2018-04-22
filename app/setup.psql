@@ -4,17 +4,20 @@ DROP DATABASE IF EXISTS :"database_name";
 CREATE DATABASE :"database_name";
 
 \c :database_name
-\ir 'schema/database.pgsql'
 
-\ir 'schema/functions/stream/category.pgsql'
-\ir 'schema/functions/stream/identifier.pgsql'
-\ir 'schema/functions/stream/version.pgsql'
-\ir 'schema/functions/stream/write_message.pgsql'
+CREATE EXTENSION IF NOT EXISTS pgtap;
 
-\ir 'schema/tables/messages.pgsql'
+\ir 'schema/database.pg'
 
-\ir 'schema/indexes/message_id.pgsql'
-\ir 'schema/indexes/messages_category_global_position.pgsql'
-\ir 'schema/indexes/messages_stream_name_position_uniq.pgsql'
+\ir 'schema/functions/stream/category.pg'
+\ir 'schema/functions/stream/identifier.pg'
+\ir 'schema/functions/stream/version.pg'
+\ir 'schema/functions/stream/write_message.pg'
+
+\ir 'schema/tables/messages.pg'
+
+\ir 'schema/indexes/message_id.pg'
+\ir 'schema/indexes/messages_category_global_position.pg'
+\ir 'schema/indexes/messages_stream_name_position_uniq.pg'
 
 \d
