@@ -8,15 +8,40 @@ database="${DATABASE_NAME:-$default_database_name}"
 
 err_invalid_command=1
 
+exec_psql() {
+  PGOPTIONS='--client-min-messages=warning' \
+    psql \
+      -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
+      -f "$1"
+}
+
 perform() {
   case "$1" in
     setup)
+      perform boot
+      perform load-code
+      perform load-schema
+      ;;
+
+    boot)
       set -e
         PGOPTIONS='--client-min-messages=warning' \
           psql \
             -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
             -d "$PGUSER" \
-            -f "$project/app/setup.psql"
+            -f "$project/app/boot.psql"
+      set +e
+      ;;
+
+    load-schema)
+      set -e
+        exec_psql "$project/app/schema.psql"
+      set +e
+      ;;
+
+    load-code)
+      set -e
+        exec_psql "$project/app/code.psql"
       set +e
       ;;
 
@@ -30,7 +55,7 @@ perform() {
       ;;
 
     shortlist)
-      echo 'setup console test'
+      echo 'setup reload console test'
       ;;
 
     *)
