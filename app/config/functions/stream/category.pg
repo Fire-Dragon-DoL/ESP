@@ -3,8 +3,18 @@ CREATE OR REPLACE FUNCTION stream_category(
 )
 RETURNS varchar
 AS $$
+DECLARE
+  category varchar;
 BEGIN
-  return split_part(_stream_name, '-', 1);
+  category = split_part(_stream_name, '-', 1);
+
+  if category = '' then
+    raise
+      exception 'Provided stream name has no category: %',
+        _stream_name;
+  end if;
+
+  return category;
 END;
 $$ LANGUAGE plpgsql
 IMMUTABLE;

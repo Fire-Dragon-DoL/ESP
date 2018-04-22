@@ -1,0 +1,36 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_category gets first word before dash"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  return query SELECT ok(
+    stream_category('account-123') = 'account'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_category gets all text when no dash present"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  return query SELECT ok(
+    stream_category('account123') = 'account123'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+  "test stream_category raises when empty"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  PREPARE empty_category AS SELECT stream_category('');
+
+  return query SELECT throws_imatching(
+    'empty_category',
+    '.*has\sno\scategory.*'
+  );
+END;
+$$ LANGUAGE plpgsql;

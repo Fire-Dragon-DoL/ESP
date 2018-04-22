@@ -15,12 +15,19 @@ exec_psql() {
       -f "$1"
 }
 
+exec_psql_quiet() {
+  PGOPTIONS='--client-min-messages=warning' \
+    psql \
+      -X -q -v ON_ERROR_STOP=1 --pset pager=off \
+      -f "$1"
+}
+
 perform() {
   case "$1" in
     setup)
       perform boot
       perform load-code
-      perform load-schema
+      perform load-structure
       ;;
 
     boot)
@@ -33,9 +40,9 @@ perform() {
       set +e
       ;;
 
-    load-schema)
+    load-structure)
       set -e
-        exec_psql "$project/app/schema.psql"
+        exec_psql "$project/app/structure.psql"
       set +e
       ;;
 
@@ -50,12 +57,17 @@ perform() {
       ;;
 
     test)
-      pg_prove --recurse --trap --jobs 4 --shuffle --ext=pg --runtests \
+      while IFS= read -d $'\0' -r file ; do
+        exec_psql_quiet "$file"
+      done < <(find 'tests/' -iname '*.pg' -print0)
+      pg_prove \
+        --recurse --trap --jobs 4 --shuffle --ext=pg --runtests \
+        --failures --verbose --match '^test\s'\
         "$project/tests/hello_world.pg"
       ;;
 
     shortlist)
-      echo 'setup reload console test'
+      echo 'setup console test boot load-code load-structure'
       ;;
 
     *)

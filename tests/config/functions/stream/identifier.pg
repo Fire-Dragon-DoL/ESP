@@ -1,0 +1,39 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_identifier gets text after dash"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  return query SELECT ok(
+    stream_identifier('account-123-asd-234') = '123-asd-234'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_identifier raises when no dash present"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  PREPARE no_identifier AS SELECT stream_identifier('account123');
+
+  return query SELECT throws_imatching(
+    'no_identifier',
+    '.*has\sno\sidentifier.*'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION
+  "test stream_identifier raises when empty"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  PREPARE empty_stream_name AS SELECT stream_identifier('');
+
+  return query SELECT throws_imatching(
+    'empty_stream_name',
+    '.*has\sno\scategory.*'
+  );
+END;
+$$ LANGUAGE plpgsql;
