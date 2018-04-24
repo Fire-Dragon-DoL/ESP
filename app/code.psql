@@ -1,4 +1,5 @@
 \ir 'config/functions/stream/category.pg'
 \ir 'config/functions/stream/identifier.pg'
+\ir 'config/functions/stream/types.pg'
 \ir 'config/functions/stream/version.pg'
 \ir 'config/functions/stream/write_message.pg'

@@ -1,0 +1,89 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an array of types"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('account:position+snapshot-123-asd-234');
+
+  return query SELECT ok(
+    types = ARRAY['position','snapshot']::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an empty array if stream is empty"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('');
+
+  return query SELECT ok(
+    types = ARRAY[]::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an array of one type when no + present"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('account:position-123-asd-234');
+
+  return query SELECT ok(
+    types = ARRAY['position']::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an array of one type when no + and - present"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('account:position');
+
+  return query SELECT ok(
+    types = ARRAY['position']::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an empty array when only category present"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('account');
+
+  return query SELECT ok(
+    types = ARRAY[]::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_types returns an empty array when category and id present"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  types varchar[];
+BEGIN
+  types = stream_types('account-123');
+
+  return query SELECT ok(
+    types = ARRAY[]::varchar[]
+  );
+END;
+$$ LANGUAGE plpgsql;

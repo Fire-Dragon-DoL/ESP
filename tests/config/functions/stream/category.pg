@@ -20,7 +20,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
 CREATE OR REPLACE FUNCTION
   "test stream_category raises when empty"()
 RETURNS SETOF TEXT
@@ -31,6 +30,21 @@ BEGIN
   return query SELECT throws_imatching(
     'empty_category',
     '.*has\sno\scategory.*'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_category gets first word before dash when has types"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  category varchar;
+BEGIN
+  category = stream_category('account:position+snapshot-123-5634');
+
+  return query SELECT ok(
+    category = 'account:position+snapshot'
   );
 END;
 $$ LANGUAGE plpgsql;

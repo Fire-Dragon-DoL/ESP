@@ -1,0 +1,25 @@
+CREATE OR REPLACE FUNCTION stream_types(
+  _stream_name varchar
+)
+RETURNS varchar[]
+AS $$
+DECLARE
+  name_only varchar;
+  types varchar;
+  type_list varchar[];
+BEGIN
+  name_only = split_part(_stream_name, ':', 1);
+  types = ltrim(_stream_name, name_only);
+  types = ltrim(types, ':');
+
+  if types = '' then
+    return ARRAY[]::varchar[];
+  end if;
+
+  types = split_part(types, '-', 1);
+  type_list = string_to_array(types, '+')::varchar[];
+
+  return type_list;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

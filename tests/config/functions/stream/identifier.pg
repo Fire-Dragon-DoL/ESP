@@ -10,6 +10,21 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
+  "test stream_identifier gets text after dash when has types"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  identifier varchar;
+BEGIN
+  identifier = stream_identifier('account:command+snapshot-123-asd-234');
+
+  return query SELECT ok(
+    identifier = '123-asd-234'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
   "test stream_identifier raises when no dash present"()
 RETURNS SETOF TEXT
 AS $$
