@@ -1,0 +1,29 @@
+-- Empty array always returns true
+CREATE OR REPLACE FUNCTION stream_has_all_types(
+  _stream_name varchar,
+  _types varchar[]
+)
+RETURNS boolean
+AS $$
+DECLARE
+  type_list varchar[];
+  types tsvector;
+  query tsquery;
+BEGIN
+  if cardinality(_types) = 0 then
+    return TRUE;
+  end if;
+
+  type_list = stream_types(_stream_name);
+
+  if cardinality(type_list) = 0 then
+    return FALSE;
+  end if;
+
+  types = array_to_tsvector(type_list);
+  query = array_to_string(_types, ' & ')::tsquery;
+
+  return (types @@ query);
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

@@ -1,0 +1,101 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is true when no types are passed"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account:position+snapshot-123-asd-234';
+  types = ARRAY[]::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = TRUE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is true when all types are in name"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account:position+snapshot-123-asd-234';
+  types = ARRAY['snapshot', 'position']::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = TRUE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is true when one type is included in name"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account:position+snapshot-123-asd-234';
+  types = ARRAY['snapshot']::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = TRUE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is false when name has no types"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account:-123-asd-234';
+  types = ARRAY['snapshot']::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = FALSE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is false when no colons"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account-123-asd-234';
+  types = ARRAY['snapshot']::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = FALSE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_has_all_types is false when passed types don't match in name"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  stream_name varchar;
+  types varchar[];
+BEGIN
+  stream_name = 'account:snapshot+position-123-asd-234';
+  types = ARRAY['snapshot', 'command']::varchar[];
+
+  return query SELECT ok(
+    stream_has_all_types(stream_name, types) = FALSE
+  );
+END;
+$$ LANGUAGE plpgsql;
