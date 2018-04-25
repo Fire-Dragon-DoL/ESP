@@ -1,0 +1,86 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_get_batch is N messages from position for stream"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  last_data jsonb[];
+BEGIN
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '1'::jsonb
+  );
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '2'::jsonb
+  );
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '3'::jsonb
+  );
+  last_data = ARRAY(
+    SELECT "data" FROM stream_get_batch('account-123', 1, 2)
+  );
+
+  return query SELECT ok(
+    last_data = ARRAY['2'::jsonb, '3'::jsonb]::jsonb[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_get_batch is N messages from global_position for category"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  last_data jsonb[];
+BEGIN
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '1'::jsonb
+  );
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-456'::varchar,
+    ''::varchar,
+    '2'::jsonb
+  );
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-789'::varchar,
+    ''::varchar,
+    '3'::jsonb
+  );
+  last_data = ARRAY(
+    SELECT "data" FROM stream_get_batch('account', 0, 1000)
+  );
+
+  return query SELECT ok(
+    last_data = ARRAY['1'::jsonb, '2'::jsonb, '3'::jsonb]::jsonb[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_get_batch is empty when no message is written"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  last_data jsonb[];
+BEGIN
+  last_data = ARRAY(
+    SELECT "data" FROM stream_get_batch('account-123', 1, 2)
+  );
+
+  return query SELECT ok(
+    last_data = ARRAY[]::jsonb[]
+  );
+END;
+$$ LANGUAGE plpgsql;

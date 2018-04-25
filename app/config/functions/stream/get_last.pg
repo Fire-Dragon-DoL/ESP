@@ -3,8 +3,6 @@ CREATE OR REPLACE FUNCTION stream_get_last(
 )
 RETURNS SETOF messages
 AS $$
-DECLARE
-  is_category boolean;
 BEGIN
   if stream_is_category(_stream_name) then
     return query SELECT

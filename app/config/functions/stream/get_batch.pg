@@ -1,0 +1,37 @@
+CREATE OR REPLACE FUNCTION stream_get_batch(
+  _stream_name varchar,
+  _position ubigint default 0,
+  _batch_size int default 10
+)
+RETURNS SETOF messages
+AS $$
+BEGIN
+  if stream_is_category(_stream_name) then
+    return query SELECT
+      *
+    FROM
+      messages
+    WHERE
+      stream_category(stream_name) = _stream_name AND
+      global_position >= _position
+    ORDER BY
+      global_position ASC
+    LIMIT
+      _batch_size
+    ;
+  else
+    return query SELECT
+      *
+    FROM
+      messages
+    WHERE
+      stream_name = _stream_name AND
+      position >= _position
+    ORDER BY
+      position ASC
+    LIMIT
+      _batch_size
+    ;
+  end if;
+END;
+$$ LANGUAGE plpgsql;

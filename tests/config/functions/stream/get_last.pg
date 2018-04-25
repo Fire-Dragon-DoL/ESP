@@ -49,3 +49,20 @@ BEGIN
   );
 END;
 $$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_get_last is empty when no message is written"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  last_data jsonb[];
+BEGIN
+  last_data = ARRAY(
+    SELECT "data" FROM stream_get_last('account')
+  );
+
+  return query SELECT ok(
+    last_data = ARRAY[]::jsonb[]
+  );
+END;
+$$ LANGUAGE plpgsql;
