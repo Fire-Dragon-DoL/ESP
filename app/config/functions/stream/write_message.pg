@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION stream_write_message(
-  _id varchar,
+  _id uuid,
   _stream_name varchar,
   _type varchar,
   _data jsonb,
@@ -9,13 +9,10 @@ CREATE OR REPLACE FUNCTION stream_write_message(
 RETURNS bigint
 AS $$
 DECLARE
-  message_id uuid;
   stream_version bigint;
   position bigint;
   category varchar;
 BEGIN
-  message_id = uuid(_id);
-
   stream_version := stream_version(_stream_name);
 
   if stream_version is null then
@@ -45,7 +42,7 @@ BEGIN
     )
   values
     (
-      message_id,
+      _id,
       _stream_name,
       position,
       _type,
@@ -55,5 +52,27 @@ BEGIN
   ;
 
   return position;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION stream_write_message(
+  _id varchar,
+  _stream_name varchar,
+  _type varchar,
+  _data jsonb,
+  _metadata jsonb DEFAULT NULL,
+  _expected_version bigint DEFAULT NULL
+)
+RETURNS bigint
+AS $$
+BEGIN
+  return stream_write_message(
+    uuid(_id),
+    _stream_name,
+    _type,
+    _data,
+    _metadata,
+    _expected_version
+  );
 END;
 $$ LANGUAGE plpgsql;

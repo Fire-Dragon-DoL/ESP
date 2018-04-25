@@ -2,6 +2,7 @@
 \ir 'config/functions/stream/has_all_types.pg'
 \ir 'config/functions/stream/identifier.pg'
 \ir 'config/functions/stream/is_category.pg'
+\ir 'config/functions/stream/get_last.pg'
 \ir 'config/functions/stream/types.pg'
 \ir 'config/functions/stream/version.pg'
 \ir 'config/functions/stream/write_message.pg'

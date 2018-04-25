@@ -1,0 +1,35 @@
+CREATE OR REPLACE FUNCTION stream_get_last(
+  _stream_name varchar
+)
+RETURNS SETOF messages
+AS $$
+DECLARE
+  is_category boolean;
+BEGIN
+  if stream_is_category(_stream_name) then
+    return query SELECT
+      *
+    FROM
+      messages
+    WHERE
+      stream_category(stream_name) = _stream_name
+    ORDER BY
+      global_position DESC
+    LIMIT
+      1
+    ;
+  else
+    return query SELECT
+      *
+    FROM
+      messages
+    WHERE
+      stream_name = _stream_name
+    ORDER BY
+      position DESC
+    LIMIT
+      1
+    ;
+  end if;
+END;
+$$ LANGUAGE plpgsql;

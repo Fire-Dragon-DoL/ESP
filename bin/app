@@ -26,8 +26,9 @@ perform() {
   case "$1" in
     setup)
       perform boot
-      perform load-code
       perform load-structure
+      perform load-code
+      perform load-indexes
       ;;
 
     boot)
@@ -52,21 +53,29 @@ perform() {
       set +e
       ;;
 
+    load-indexes)
+      set -e
+        exec_psql "$project/app/indexes.psql"
+      set +e
+      ;;
+
     console)
       psql
       ;;
 
     test)
-      while IFS= read -d $'\0' -r file ; do
-        exec_psql_quiet "$file"
-      done < <(find 'tests/' -iname '*.pg' -print0)
+      set -e
+        while IFS= read -d $'\0' -r file ; do
+          exec_psql_quiet "$file"
+        done < <(find 'tests/' -iname '*.pg' -print0)
+      set +e
       pg_prove \
         --recurse --trap --shuffle --ext=pg --runtests \
         --failures --verbose --match '^test\s'
       ;;
 
     shortlist)
-      echo 'setup console test boot load-code load-structure'
+      echo 'setup console test boot load-structure load-code load-indexes'
       ;;
 
     *)

@@ -1,7 +1,3 @@
 \ir 'config/domains/ubigint.pg'
-
 \ir 'config/tables/messages.pg'
 
-\ir 'config/indexes/message_id.pg'
-\ir 'config/indexes/messages_category_global_position.pg'
-\ir 'config/indexes/messages_stream_name_position_uniq.pg'
