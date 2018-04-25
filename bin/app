@@ -61,9 +61,8 @@ perform() {
         exec_psql_quiet "$file"
       done < <(find 'tests/' -iname '*.pg' -print0)
       pg_prove \
-        --recurse --trap --jobs 4 --shuffle --ext=pg --runtests \
-        --failures --verbose --match '^test\s'\
-        "$project/tests/hello_world.pg"
+        --recurse --trap --shuffle --ext=pg --runtests \
+        --failures --verbose --match '^test\s'
       ;;
 
     shortlist)

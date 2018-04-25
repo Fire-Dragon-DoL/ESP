@@ -1,3 +1,5 @@
+\ir 'config/domains/ubigint.pg'
+
 \ir 'config/tables/messages.pg'
 
 \ir 'config/indexes/message_id.pg'
