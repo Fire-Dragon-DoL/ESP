@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION stream_is_category(
+  _stream_name varchar
+)
+RETURNS boolean
+AS $$
+DECLARE
+  dash_position int;
+BEGIN
+  dash_position = strpos(_stream_name, '-');
+
+  return dash_position = 0;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

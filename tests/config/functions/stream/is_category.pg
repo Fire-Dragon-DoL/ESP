@@ -1,0 +1,21 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_is_category is true when dash is present"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  return query SELECT ok(
+    stream_is_category('account-123') = FALSE
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_is_category is false when dash is missing"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  return query SELECT ok(
+    stream_is_category('account') = TRUE
+  );
+END;
+$$ LANGUAGE plpgsql;
