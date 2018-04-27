@@ -1,0 +1,6 @@
+DROP TRIGGER IF EXISTS on_insert_stream_notify on messages;
+CREATE TRIGGER on_insert_stream_notify
+  AFTER INSERT
+  ON messages
+  FOR EACH ROW
+  EXECUTE PROCEDURE stream_notify_on_insert();

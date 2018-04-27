@@ -29,6 +29,7 @@ perform() {
       perform load-structure
       perform load-code
       perform load-indexes
+      perform load-triggers
       ;;
 
     boot)
@@ -59,6 +60,12 @@ perform() {
       set +e
       ;;
 
+    load-triggers)
+      set -e
+        exec_psql "$project/app/triggers.psql"
+      set +e
+      ;;
+
     console)
       psql
       ;;
@@ -75,7 +82,7 @@ perform() {
       ;;
 
     shortlist)
-      echo 'setup console test boot load-structure load-code load-indexes'
+      echo 'setup console test boot load-structure load-code load-indexes load-triggers'
       ;;
 
     *)

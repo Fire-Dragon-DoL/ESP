@@ -1,0 +1,27 @@
+CREATE OR REPLACE FUNCTION stream_notify(
+  _stream_name varchar,
+  _id uuid
+)
+RETURNS void
+AS $$
+DECLARE
+  category varchar;
+BEGIN
+  category = stream_category(_stream_name);
+
+  if category != _stream_name then
+    PERFORM pg_notify(_stream_name::text, _id::text);
+  end if;
+
+  PERFORM pg_notify(category::text, _id::text);
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION stream_notify_on_insert()
+RETURNS trigger
+AS $$
+BEGIN
+  PERFORM stream_notify(NEW.stream_name, NEW.id);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
