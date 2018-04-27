@@ -2,6 +2,8 @@
 
 Event store for postgres
 
+**This is an experimental project, don't use it anywhere**
+
 ## Setup
 
 - Make sure you only have one version of postgres installed (or ensure you
