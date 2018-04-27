@@ -1,4 +1,6 @@
-# Eventstore-Postgres
+# ESP
+
+Event store for postgres
 
 ## Setup
 
@@ -8,9 +10,5 @@
 - `bin/app setup`
 - Set `PGDATABASE` env variable to database you want to use
 - Set `PGUSER` env variable to your user
-- Make sure you have a database with the name of your postgres user
-
-## Needs
-
-- Batch-fetch multiple messages for stream name
-- Snapshot writer
+- Make sure you have a database with the name of your postgres user (required
+  for initial connection)
