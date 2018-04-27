@@ -5,7 +5,7 @@ CREATE DATABASE :"database_name";
 
 \c :database_name
 
-\ir 'config/database.pg'
+\ir '../config/database.pg'
 
 CREATE EXTENSION IF NOT EXISTS pgtap;
 

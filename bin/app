@@ -25,20 +25,26 @@ exec_psql_quiet() {
 perform() {
   case "$1" in
     setup)
-      perform boot
+      perform load-development
       perform load-structure
       perform load-code
       perform load-indexes
       perform load-triggers
       ;;
 
-    boot)
+    load-development)
       set -e
         PGOPTIONS='--client-min-messages=warning' \
           psql \
             -X -q -a -v ON_ERROR_STOP=1 --pset pager=off \
             -d "$PGUSER" \
-            -f "$project/app/boot.psql"
+            -f "$project/app/environment/development.psql"
+      set +e
+      ;;
+
+    load-production)
+      set -e
+        exec_psql "$project/app/environment/production.psql"
       set +e
       ;;
 
@@ -81,16 +87,31 @@ perform() {
         --failures --verbose --match '^test\s'
       ;;
 
+    install)
+      local dbname="${@:2}"
+      if [[ -z "${dbname// }" ]]; then
+        >&2 echo "Database name required"
+      fi
+      echo "Install on database: $dbname"
+      set -e
+        PGDATABASE="$dbname" perform load-production
+        PGDATABASE="$dbname" perform load-structure
+        PGDATABASE="$dbname" perform load-code
+        PGDATABASE="$dbname" perform load-indexes
+        PGDATABASE="$dbname" perform load-triggers
+      set +e
+      ;;
+
     shortlist)
-      echo 'setup console test boot load-structure load-code load-indexes load-triggers'
+      echo 'setup console test install load-env load-structure load-code load-indexes load-triggers'
       ;;
 
     *)
       if [[ ! -z "${1// }" ]]; then
-        echo $"Invalid command: $1"
+        >&2 echo $"Invalid command: $1"
       fi
       local shortlist="$(perform shortlist)"
-      echo $"Usage: $executable ${shortlist// /|}"
+      >&2 echo $"Usage: $executable ${shortlist// /|}"
       exit $err_invalid_command
       ;;
 
