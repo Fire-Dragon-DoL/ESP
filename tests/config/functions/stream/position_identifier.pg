@@ -1,0 +1,18 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_position_identifier is stream_name + position if not category"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  posid varchar;
+BEGIN
+  posid = stream_position_identifier(
+    'account-123'::varchar,
+    2::ubigint,
+    0::ubigint
+  );
+
+  return query SELECT ok(
+    posid = 'account-123/2'
+  );
+END;
+$$ LANGUAGE plpgsql;

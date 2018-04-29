@@ -1,12 +1,20 @@
 CREATE OR REPLACE FUNCTION stream_version(
   _stream_name varchar
 )
-RETURNS bigint
+RETURNS ubigint
 AS $$
 DECLARE
-  stream_version bigint;
+  stream_version ubigint;
 BEGIN
-  select max(position) into stream_version from messages where stream_name = _stream_name;
+  SELECT
+    max(position)
+  INTO
+    stream_version
+  FROM
+    messages
+  WHERE
+    stream_name = _stream_name
+  ;
 
   return stream_version;
 END;

@@ -1,0 +1,35 @@
+CREATE OR REPLACE FUNCTION stream_position_identifier(
+  _stream_name varchar,
+  _position ubigint,
+  _global_position ubigint
+)
+RETURNS varchar
+AS $$
+DECLARE
+  category varchar;
+BEGIN
+  category = stream_category(_stream_name);
+
+  if category = _stream_name then
+    return format('%s/%s', _stream_name, _global_position)::varchar;
+  end if;
+
+  return format('%s/%s', _stream_name, _position)::varchar;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;
+
+CREATE OR REPLACE FUNCTION stream_position_identifier(
+  _message messages
+)
+RETURNS varchar
+AS $$
+BEGIN
+  return stream_position_identifier(
+    _message.stream_name,
+    _message.position,
+    _message.global_position
+  );
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

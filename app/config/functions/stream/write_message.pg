@@ -4,13 +4,13 @@ CREATE OR REPLACE FUNCTION stream_write_message(
   _type varchar,
   _data jsonb,
   _metadata jsonb DEFAULT NULL,
-  _expected_version bigint DEFAULT NULL
+  _expected_version ubigint DEFAULT NULL
 )
-RETURNS bigint
+RETURNS ubigint
 AS $$
 DECLARE
   stream_version bigint;
-  position bigint;
+  position ubigint;
   category varchar;
 BEGIN
   stream_version := stream_version(_stream_name);
@@ -61,9 +61,9 @@ CREATE OR REPLACE FUNCTION stream_write_message(
   _type varchar,
   _data jsonb,
   _metadata jsonb DEFAULT NULL,
-  _expected_version bigint DEFAULT NULL
+  _expected_version ubigint DEFAULT NULL
 )
-RETURNS bigint
+RETURNS ubigint
 AS $$
 BEGIN
   return stream_write_message(

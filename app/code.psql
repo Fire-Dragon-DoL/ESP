@@ -5,6 +5,7 @@
 \ir 'config/functions/stream/get_batch.pg'
 \ir 'config/functions/stream/get_last.pg'
 \ir 'config/functions/stream/notify.pg'
+\ir 'config/functions/stream/position_identifier.pg'
 \ir 'config/functions/stream/types.pg'
 \ir 'config/functions/stream/version.pg'
 \ir 'config/functions/stream/write_message.pg'
