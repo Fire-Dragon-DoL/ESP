@@ -3,9 +3,6 @@
 executable="$0"
 project="${PROJECT_PATH:-$PWD}"
 
-default_database_name='eventstore'
-database="${DATABASE_NAME:-$default_database_name}"
-
 err_invalid_command=1
 
 exec_psql() {
@@ -88,17 +85,16 @@ perform() {
       ;;
 
     install)
-      local dbname="${@:2}"
-      if [[ -z "${dbname// }" ]]; then
-        >&2 echo "Database name required"
+      if [[ -z "${PGDATABASE// }" ]]; then
+        >&2 echo "Database name required, please export PGDATABASE"
       fi
-      echo "Install on database: $dbname"
+      echo "Install on database: $PGDATABASE"
       set -e
-        PGDATABASE="$dbname" perform load-production
-        PGDATABASE="$dbname" perform load-structure
-        PGDATABASE="$dbname" perform load-code
-        PGDATABASE="$dbname" perform load-indexes
-        PGDATABASE="$dbname" perform load-triggers
+        perform load-production
+        perform load-structure
+        perform load-code
+        perform load-indexes
+        perform load-triggers
       set +e
       ;;
 
