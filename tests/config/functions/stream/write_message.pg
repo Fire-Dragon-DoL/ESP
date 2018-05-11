@@ -1,0 +1,82 @@
+CREATE OR REPLACE FUNCTION
+  "test stream_write_message successful if expects an empty stream"()
+RETURNS SETOF TEXT
+AS $$
+DECLARE
+  last_data jsonb[];
+BEGIN
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '234'::jsonb,
+    '1233'::jsonb,
+    (-1)
+  );
+  last_data = ARRAY(
+    SELECT "data" FROM stream_get_last('account-123')
+  );
+
+  return query SELECT ok(
+    last_data = ARRAY['234'::jsonb]::jsonb[]
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_write_message fails if expects wrong stream version"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '234'::jsonb,
+    '1233'::jsonb,
+    (-1)
+  );
+  PERFORM stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '456'::jsonb,
+    '1233'::jsonb,
+    0
+  );
+  PREPARE write_wrong_version AS SELECT stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '777'::jsonb,
+    '1233'::jsonb,
+    20
+  );
+
+  return query SELECT throws_imatching(
+    'write_wrong_version',
+    '.*Wrong\sexpected\sversion.*'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION
+  "test stream_write_message raises if expected version less than -1"()
+RETURNS SETOF TEXT
+AS $$
+BEGIN
+  PREPARE write_expected_min2 AS SELECT stream_write_message(
+    gen_random_uuid(),
+    'account-123'::varchar,
+    ''::varchar,
+    '234'::jsonb,
+    '1233'::jsonb,
+    (-2)
+  );
+
+  return query SELECT throws_imatching(
+    'write_expected_min2',
+    '.*versionbigint\sviolates\scheck\sconstraint.*'
+  );
+END;
+$$ LANGUAGE plpgsql;

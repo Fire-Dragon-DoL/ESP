@@ -1,0 +1,2 @@
+CREATE DOMAIN versionbigint AS bigint
+   CHECK(VALUE >= (-1) AND VALUE <= 9223372036854775807);
