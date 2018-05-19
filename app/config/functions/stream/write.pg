@@ -1,16 +1,16 @@
-CREATE OR REPLACE FUNCTION stream_write_message(
+CREATE OR REPLACE FUNCTION stream_write(
   _id uuid,
   _stream_name varchar,
   _type varchar,
   _data jsonb,
   _metadata jsonb DEFAULT NULL,
-  _expected_version versionbigint DEFAULT NULL
+  _expected_version expected_version_int DEFAULT NULL
 )
-RETURNS ubigint
+RETURNS version_int
 AS $$
 DECLARE
-  stream_version versionbigint;
-  position ubigint;
+  stream_version expected_version_int;
+  stream_position version_int;
   category varchar;
 BEGIN
   stream_version := stream_version(_stream_name);
@@ -29,7 +29,7 @@ BEGIN
     end if;
   end if;
 
-  position := stream_version + 1;
+  stream_position := stream_version + 1;
 
   insert into "messages"
     (
@@ -44,29 +44,29 @@ BEGIN
     (
       _id,
       _stream_name,
-      position,
+      stream_position,
       _type,
       _data,
       _metadata
     )
   ;
 
-  return position;
+  return stream_position;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION stream_write_message(
+CREATE OR REPLACE FUNCTION stream_write(
   _id varchar,
   _stream_name varchar,
   _type varchar,
   _data jsonb,
   _metadata jsonb DEFAULT NULL,
-  _expected_version ubigint DEFAULT NULL
+  _expected_version expected_version_int DEFAULT NULL
 )
-RETURNS ubigint
+RETURNS version_int
 AS $$
 BEGIN
-  return stream_write_message(
+  return stream_write(
     uuid(_id),
     _stream_name,
     _type,

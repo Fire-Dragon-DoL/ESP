@@ -1,2 +1,2 @@
-CREATE DOMAIN versionbigint AS bigint
+CREATE DOMAIN expected_version_int AS bigint
    CHECK(VALUE >= (-1) AND VALUE <= 9223372036854775807);

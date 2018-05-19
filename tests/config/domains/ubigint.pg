@@ -1,9 +1,9 @@
 CREATE OR REPLACE FUNCTION
-  "test ubigint can't be written in messages if input < 0"()
+  "test version_int can't be written in messages if input < 0"()
 RETURNS SETOF TEXT
 AS $$
 BEGIN
-    PREPARE write_message AS INSERT INTO "messages"
+    PREPARE write AS INSERT INTO "messages"
       (
         "id",
         "stream_name",
@@ -23,8 +23,8 @@ BEGIN
       );
 
   return query SELECT throws_imatching(
-    'write_message',
-    '.*ubigint\sviolates\scheck\sconstraint.*'
+    'write',
+    '.*version_int\sviolates\scheck\sconstraint.*'
   );
 END;
 $$ LANGUAGE plpgsql;

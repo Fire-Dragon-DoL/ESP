@@ -7,8 +7,8 @@ DECLARE
 BEGIN
   posid = stream_position_identifier(
     'account-123'::varchar,
-    2::ubigint,
-    0::ubigint
+    2::version_int,
+    0::version_int
   );
 
   return query SELECT ok(

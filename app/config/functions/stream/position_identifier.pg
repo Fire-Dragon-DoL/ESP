@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION stream_position_identifier(
   _stream_name varchar,
-  _position ubigint,
-  _global_position ubigint
+  _position version_int,
+  _global_position version_int
 )
 RETURNS varchar
 AS $$

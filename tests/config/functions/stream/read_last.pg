@@ -1,18 +1,18 @@
 CREATE OR REPLACE FUNCTION
-  "test stream_get_last is last message written in stream"()
+  "test stream_read_last is last message written in stream"()
 RETURNS SETOF TEXT
 AS $$
 DECLARE
   last_data jsonb[];
 BEGIN
-  PERFORM stream_write_message(
+  PERFORM stream_write(
     gen_random_uuid(),
     'account-123'::varchar,
     ''::varchar,
     '234'::jsonb
   );
   last_data = ARRAY(
-    SELECT "data" FROM stream_get_last('account-123')
+    SELECT "data" FROM stream_read_last('account-123')
   );
 
   return query SELECT ok(
@@ -22,26 +22,26 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
-  "test stream_get_last is last message written in category"()
+  "test stream_read_last is last message written in category"()
 RETURNS SETOF TEXT
 AS $$
 DECLARE
   last_data jsonb[];
 BEGIN
-  PERFORM stream_write_message(
+  PERFORM stream_write(
     gen_random_uuid(),
     'account-123'::varchar,
     ''::varchar,
     '234'::jsonb
   );
-  PERFORM stream_write_message(
+  PERFORM stream_write(
     gen_random_uuid(),
     'account-456'::varchar,
     ''::varchar,
     '111'::jsonb
   );
   last_data = ARRAY(
-    SELECT "data" FROM stream_get_last('account')
+    SELECT "data" FROM stream_read_last('account')
   );
 
   return query SELECT ok(
@@ -51,14 +51,14 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION
-  "test stream_get_last is empty when no message is written"()
+  "test stream_read_last is empty when no message is written"()
 RETURNS SETOF TEXT
 AS $$
 DECLARE
   last_data jsonb[];
 BEGIN
   last_data = ARRAY(
-    SELECT "data" FROM stream_get_last('account')
+    SELECT "data" FROM stream_read_last('account')
   );
 
   return query SELECT ok(

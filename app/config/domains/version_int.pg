@@ -1,2 +1,2 @@
-CREATE DOMAIN ubigint AS bigint
+CREATE DOMAIN version_int AS bigint
    CHECK(VALUE >= 0 AND VALUE <= 9223372036854775807);

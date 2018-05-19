@@ -1,6 +1,6 @@
-CREATE OR REPLACE FUNCTION stream_get_batch(
+CREATE OR REPLACE FUNCTION stream_read_batch(
   _stream_name varchar,
-  _position ubigint default 0,
+  _position version_int default 0,
   _batch_size int default 10
 )
 RETURNS SETOF messages

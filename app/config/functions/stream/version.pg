@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION stream_version(
   _stream_name varchar
 )
-RETURNS ubigint
+RETURNS version_int
 AS $$
 DECLARE
-  stream_version ubigint;
+  stream_version version_int;
 BEGIN
   SELECT
     max(position)

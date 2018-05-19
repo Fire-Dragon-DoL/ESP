@@ -1,4 +1,4 @@
-CREATE OR REPLACE FUNCTION stream_get_last(
+CREATE OR REPLACE FUNCTION stream_read_last(
   _stream_name varchar
 )
 RETURNS SETOF messages
