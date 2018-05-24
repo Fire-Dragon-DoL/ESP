@@ -1,9 +1,6 @@
-CREATE OR REPLACE FUNCTION stream_write(
-  _id uuid,
+CREATE OR REPLACE FUNCTION stream_write_batch(
+  _minimals minimal_message[],
   _stream_name varchar,
-  _type varchar,
-  _data jsonb,
-  _metadata jsonb DEFAULT NULL,
   _expected_version expected_version_int DEFAULT NULL
 )
 RETURNS version_int
@@ -11,6 +8,7 @@ AS $$
 DECLARE
   stream_version expected_version_int;
   stream_position version_int;
+  _insertables insertable_message[];
 BEGIN
   stream_version := stream_version(_stream_name);
 
@@ -28,7 +26,16 @@ BEGIN
     end if;
   end if;
 
+  if cardinality(_minimals) = 0 then
+    raise exception 'No messages given';
+  end if;
+
   stream_position := stream_version + 1;
+  _insertables = minimal_message_to_insertable_array(
+    _minimals,
+    stream_position,
+    _stream_name
+  );
 
   insert into "messages"
     (
@@ -39,39 +46,12 @@ BEGIN
       "data",
       "metadata"
     )
-  values
-    (
-      _id,
-      _stream_name,
-      stream_position,
-      _type,
-      _data,
-      _metadata
-    )
+  select * from
+    unnest(_insertables)
   ;
 
-  return stream_position;
-END;
-$$ LANGUAGE plpgsql;
+  stream_position = stream_version + cardinality(_minimals);
 
-CREATE OR REPLACE FUNCTION stream_write(
-  _id varchar,
-  _stream_name varchar,
-  _type varchar,
-  _data jsonb,
-  _metadata jsonb DEFAULT NULL,
-  _expected_version expected_version_int DEFAULT NULL
-)
-RETURNS version_int
-AS $$
-BEGIN
-  return stream_write(
-    uuid(_id),
-    _stream_name,
-    _type,
-    _data,
-    _metadata,
-    _expected_version
-  );
+  return stream_position;
 END;
 $$ LANGUAGE plpgsql;

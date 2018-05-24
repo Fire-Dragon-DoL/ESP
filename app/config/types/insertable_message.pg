@@ -1,0 +1,8 @@
+CREATE TYPE insertable_message AS (
+  "id" uuid,
+  "stream_name" varchar,
+  "position" version_int,
+  "type" varchar,
+  "data" jsonb,
+  "metadata" jsonb
+);

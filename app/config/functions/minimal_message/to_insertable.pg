@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION minimal_message_to_insertable(
+  _minimal minimal_message,
+  _position version_int,
+  _stream_name varchar
+)
+RETURNS insertable_message
+AS $$
+BEGIN
+  return (
+    _minimal."id",
+    _stream_name,
+    _position,
+    _minimal."type",
+    _minimal."data",
+    _minimal."metadata"
+  )::insertable_message;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

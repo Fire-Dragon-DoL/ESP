@@ -1,6 +1,6 @@
 CREATE TABLE "public"."messages" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-  "stream_name" varchar(255) NOT NULL COLLATE "default",
+  "stream_name" varchar(511) NOT NULL COLLATE "default",
   "type" varchar(255) NOT NULL COLLATE "default",
   "position" version_int NOT NULL,
   "global_position" bigserial NOT NULL ,

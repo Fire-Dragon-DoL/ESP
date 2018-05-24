@@ -1,0 +1,6 @@
+CREATE TYPE minimal_message AS (
+  "id" uuid,
+  "type" varchar,
+  "data" jsonb,
+  "metadata" jsonb
+);

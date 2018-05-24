@@ -1,4 +1,6 @@
 \ir 'config/domains/version_int.pg'
 \ir 'config/domains/expected_version_int.pg'
+\ir 'config/types/minimal_message.pg'
+\ir 'config/types/insertable_message.pg'
 \ir 'config/tables/messages.pg'
 

@@ -1,0 +1,29 @@
+CREATE OR REPLACE FUNCTION minimal_message_to_insertable_array(
+  _minimals minimal_message[],
+  _start_position version_int,
+  _stream_name varchar
+)
+RETURNS insertable_message[]
+AS $$
+DECLARE
+  _minimal minimal_message;
+  _insertable insertable_message;
+  _position version_int;
+  _insertables insertable_message[];
+BEGIN
+  _position = _start_position;
+  FOREACH _minimal IN ARRAY _minimals
+  LOOP
+    _insertable = minimal_message_to_insertable(
+      _minimal,
+      _position,
+      _stream_name
+    );
+    _position = _position + 1;
+    _insertables = array_append(_insertables, _insertable);
+  END LOOP;
+
+  RETURN _insertables;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

@@ -9,3 +9,6 @@
 \ir 'config/functions/stream/types.pg'
 \ir 'config/functions/stream/version.pg'
 \ir 'config/functions/stream/write.pg'
+\ir 'config/functions/stream/write_batch.pg'
+\ir 'config/functions/minimal_message/to_insertable.pg'
+\ir 'config/functions/minimal_message/to_insertable_array.pg'
