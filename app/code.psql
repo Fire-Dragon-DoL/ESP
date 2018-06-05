@@ -1,5 +1,6 @@
 \ir 'config/functions/stream/category.pg'
 \ir 'config/functions/stream/has_all_types.pg'
+\ir 'config/functions/stream/hash_64.pg'
 \ir 'config/functions/stream/identifier.pg'
 \ir 'config/functions/stream/is_category.pg'
 \ir 'config/functions/stream/read_batch.pg'

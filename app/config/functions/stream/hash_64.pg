@@ -1,0 +1,13 @@
+CREATE OR REPLACE FUNCTION stream_hash_64(
+  _stream_name varchar
+)
+RETURNS bigint
+AS $$
+DECLARE
+  hash bigint;
+BEGIN
+  hash := left('x' || md5(_stream_name), 16)::bit(64)::bigint;
+  return hash;
+END;
+$$ LANGUAGE plpgsql
+IMMUTABLE;

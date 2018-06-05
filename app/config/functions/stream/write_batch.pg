@@ -9,7 +9,11 @@ DECLARE
   stream_version expected_version_int;
   stream_position version_int;
   _insertables insertable_message[];
+  stream_name_hash bigint;
 BEGIN
+  stream_name_hash = stream_hash_64(_stream_name);
+  PERFORM pg_advisory_xact_lock(stream_name_hash);
+
   stream_version := stream_version(_stream_name);
 
   if stream_version is null then
